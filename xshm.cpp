@@ -306,7 +306,7 @@ void xShmData::shmsem_lock()
 {
     if(m_sem == nullptr)
     {
-        m_error = xShm::xShmError::xShmUninitialized;
+        m_error = xShm::xShmError::Uninitialized;
         return;
     }
     WaitForSingleObject(m_sem, INFINITE);
@@ -316,7 +316,7 @@ void xShmData::shmsem_unlock()
 {
     if(m_sem == nullptr)
     {
-        m_error = xShm::xShmError::xShmUninitialized;
+        m_error = xShm::xShmError::Uninitialized;
         return;
     }
     ReleaseSemaphore(m_sem, 1, nullptr);
@@ -341,7 +341,7 @@ bool xShmData::shm_create(unsigned int size)
         m_key.c_str());
     if(handle == nullptr)
     {
-        m_error = xShm::xShmError::xShmCreatFailed;
+        m_error = xShm::xShmError::ShmCreatFailed;
         return false;
     }
     if(GetLastError() ==
@@ -357,7 +357,7 @@ bool xShmData::shm_create(unsigned int size)
     if(attr == nullptr)
     {
         CloseHandle(handle);
-        m_error = xShm::xShmError::xShmNoAddr;
+        m_error = xShm::xShmError::ShmLostAddr;
         return false;
     }
 
@@ -402,13 +402,13 @@ bool xShmData::shm_attach(xShm::AccessMode mode)
         0, 0, sizeof(xShmAttr));
     if(attr == nullptr)
     {
-        m_error = xShm::xShmError::xShmNoAddr;
+        m_error = xShm::xShmError::ShmLostAddr;
         return false;
     }
 
     if(!shmsem_open())
     {
-        m_error = xShm::xShmError::mLockCreatFailed;
+        m_error = xShm::xShmError::LockOpenFailed;
         return false;
     }
 
@@ -442,7 +442,7 @@ unsigned int xShmData::shm_size()
 {
     if(m_data != nullptr)
     {
-        m_error = xShm::xShmError::xShmUninitialized;
+        m_error = xShm::xShmError::Uninitialized;
         return 0;
     }
     return m_attr->size;
